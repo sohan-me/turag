@@ -191,3 +191,26 @@ class Social(TimeStamp):
 
 	def __str__(self):
 		return self.type + ' - ' + self.url
+
+
+
+
+class Gallery(TimeStamp):
+	Type = [
+		('Outdoor', 'Outdoor'),
+		('Dining', 'Dining'),
+		('Activities', 'Activities'),
+		('Events', 'Events'),
+		('Interior', 'Interior'),
+		('Rooms', 'Rooms'),
+	]
+
+	type = models.CharField(choices=Type, max_length=20)
+	image = models.ImageField(upload_to='gallery/')
+	description = models.TextField(null=True, blank=True)
+
+	class Meta:
+		verbose_name_plural = 'Galleries'
+
+	def __str__(self):
+		return self.type

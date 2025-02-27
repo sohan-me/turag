@@ -4,8 +4,9 @@ from rest_framework.views import APIView
 from .models import *
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import  AllowAny
-from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer
+from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .utils import Util
 
 
@@ -49,19 +50,21 @@ class RoomViewSet(viewsets.ViewSet):
 	def get_queryset(self):
 		return Room.objects.prefetch_related('room_image').prefetch_related('amenities').prefetch_related('complementary')
 
-
 	@extend_schema(
 		description='Get list of all the rooms.',
 		responses={200: RoomSerializer(many=True)}
 	)
 	def list(self, request):
 		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response(
+				{'detail':'No rooms found.'}, status=status.HTTP_400_BAD_REQUEST
+				)
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 	@extend_schema(
-		description='Retrieve a room by its slug.',
+		description='Retrieve a room by it`s slug.',
 		responses={200: RoomSerializer}
 	)
 	def retrieve(self, request, slug=None):
@@ -88,6 +91,10 @@ class ActivityViewSet(viewsets.ViewSet):
 	)
 	def list(self, request):
 		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response(
+				{'detail':'No activities found.'}, status=status.HTTP_400_BAD_REQUEST
+				)
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -119,5 +126,50 @@ class SocialViewSet(viewsets.ViewSet):
 		)
 	def list(self, request):
 		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response(
+				{'detail':'No social links found.'}, status=status.HTTP_400_BAD_REQUEST
+				)
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+class GalleryViewSet(viewsets.ViewSet):
+	serializer_class = GallerySerializer
+	permission_classes = [AllowAny]
+
+	def get_queryset(self):
+		return Gallery.objects.all()
+
+	@extend_schema(
+		description="Get list of all gallery images.",
+		responses={200:GallerySerializer(many=True)}
+		)
+	def list(self, request):
+		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response(
+				{'detail':'No gallery images found.'}, status=status.HTTP_400_BAD_REQUEST
+				)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+	@action(detail=False, methods=['get'], url_path='by-type/(?P<type>[^/.]+)')
+	@extend_schema(
+		description="Get list of gallery images by type.",
+		responses={200:GallerySerializer(many=True)}
+		)
+	def list_by_type(self, request, type=None):
+		queryset = self.get_queryset().filter(type=type)
+		if not queryset.exists():
+			return Response(
+				{"detail": "No gallery images found for the specified type."},
+				status=status.HTTP_404_NOT_FOUND
+			)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+

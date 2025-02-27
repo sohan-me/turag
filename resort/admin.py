@@ -3,7 +3,7 @@ from .models import *
 from nested_admin import NestedModelAdmin, NestedTabularInline, NestedStackedInline
 # Register your models here.
 
-class RoomImageLineAdmin(NestedTabularInline):
+class RoomImageLineAdmin(NestedStackedInline):
 	model = RoomImageLine
 	extra = 4
 	can_delete = True
@@ -58,3 +58,10 @@ class BookingAdmin(admin.ModelAdmin):
 class SocialAdmin(admin.ModelAdmin):
 	list_display = ['id', 'type', 'url', 'description']
 	list_display_links = ['id', 'type', 'url']
+
+
+
+@admin.register(Gallery)
+class GalleryAdmin(admin.ModelAdmin):
+	list_display = ['type', 'image', 'description']
+	list_display_links = ['type', 'image', 'description']
