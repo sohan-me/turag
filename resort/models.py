@@ -16,6 +16,32 @@ class TimeStamp(models.Model):
 
 
 
+# Amenities model
+class Amenities(TimeStamp):
+	icon = models.ImageField(upload_to='room/amenities/', null=True, blank=True)
+	title = models.CharField(max_length=255)
+
+	class Meta:
+		verbose_name_plural = 'Amenities'
+
+	def __str__(self):
+		return self.title
+
+
+
+# Complementary model
+class Complementary(TimeStamp):
+	icon = models.ImageField(upload_to='room/amenities/', null=True, blank=True)
+	title = models.CharField(max_length=255)
+
+	class Meta:
+		verbose_name_plural = 'complementaries'
+ 
+	def __str__(self):
+		return self.title
+
+
+
 # Model for Rooms
 class Room(TimeStamp):
 	TYPE = [
@@ -23,6 +49,9 @@ class Room(TimeStamp):
 		('Suite', 'Suite'),
 		('Villa', 'Villa'),
 		('Duplex', 'Duplex'),
+		('Lake View', 'Lake View'),
+		('River View', 'River View'),
+
 	]
 
 	title = models.CharField(max_length=255)
@@ -32,6 +61,8 @@ class Room(TimeStamp):
 	cost = models.DecimalField(max_digits=10, decimal_places=2)
 	type = models.CharField(choices=TYPE, max_length=20)
 	tags = models.CharField(max_length=300)
+	amenities = models.ManyToManyField(Amenities, blank=True, related_name='room')
+	complementary = models.ManyToManyField(Complementary, blank=True, related_name='room')
 	is_available = models.BooleanField(default=True)
 
 	def __str__(self):
@@ -63,26 +94,6 @@ class RoomImageLine(models.Model):
 		return self.room.title
 
 
-# Amenities model for room object
-class Amenities(models.Model):
-	room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='amenities')
-	icon = models.ImageField(upload_to='room/amenities/', null=True, blank=True)
-	title = models.CharField(max_length=255)
-
-	def __str__(self):
-		return self.title
-
-
-
-# Complementary model for room object
-class Complementary(models.Model):
-	room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='complementary')
-	icon = models.ImageField(upload_to='room/amenities/', null=True, blank=True)
-	title = models.CharField(max_length=255)
- 
-	def __str__(self):
-		return self.title
-
 
 
 # Model for Activities
@@ -91,6 +102,10 @@ class Activity(TimeStamp):
 		('Restaurant', 'Restaurant'),
 		('Event', 'Event'),
 		('Recreation', 'Recreation'),
+		('Play Ground', 'Play Ground'),
+		('Kids Zone', 'Kids Zone'),
+		('Hall', 'Hall'),
+		('Outdoor', 'Outdoor'),
 	]
 
 	title = models.CharField(max_length=255)
@@ -98,6 +113,7 @@ class Activity(TimeStamp):
 	description = models.TextField()
 	type = models.CharField(max_length=20, choices=TYPE)
 	tags = models.CharField(max_length=300, null=True, blank=True)
+	
 
 	class Meta:
 		verbose_name_plural = 'Activities'
@@ -154,3 +170,24 @@ class Booking(TimeStamp):
 	def __str__(self):
 		return self.full_name
 
+
+
+class Social(TimeStamp):
+
+	Type = [
+		('Facebook', 'Facebook'),
+		('Linkedin', 'Linkedin'),
+		('Instagram', 'Instagram'),
+		('Youtube', 'Youtube'),
+		('Tiktok', 'Tiktok'),
+		('Pinterest', 'Pinterest'),
+		('Whatsapp', 'Whatsapp'),
+		('Twitter', 'Twitter'),
+	]
+
+	type = models.CharField(choices=Type, max_length=20)
+	url = models.URLField(max_length=200)
+	description = models.TextField(null=True, blank=True)
+
+	def __str__(self):
+		return self.type + ' - ' + self.url

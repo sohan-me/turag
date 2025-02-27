@@ -32,8 +32,6 @@ class RoomSerializer(serializers.ModelSerializer):
 		read_only_fields = ['id']
 
 
-
-
 class ActivityImageLineSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ActivityImageLine
@@ -62,3 +60,9 @@ class BookingSerializer(serializers.ModelSerializer):
 		if data['check_in'] > data['check_out']:
 			raise serializers.ValidationError('check_out must occur after check_in.')
 		return data
+
+
+class SocialSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Social
+		fields = '__all__'

@@ -9,14 +9,14 @@ class RoomImageLineAdmin(NestedTabularInline):
 	can_delete = True
 
 
-class AmenitiesAdmin(NestedTabularInline):
-	model = Amenities
-	extra = 2
+@admin.register(Amenities)
+class AmenitiesAdmin(admin.ModelAdmin):
+	list_display = ['id', 'icon', 'title']
 
 
-class ComplementaryAdmin(NestedTabularInline):
-	model = Complementary
-	extra = 2
+@admin.register(Complementary)
+class ComplementaryAdmin(admin.ModelAdmin):
+	list_display = ['id', 'icon', 'title']
 
 
 @admin.register(Room)
@@ -25,7 +25,7 @@ class RoomAdmin(NestedModelAdmin):
 	list_display_links = ['title']
 	list_filter = ['type', 'is_available']
 
-	inlines = [RoomImageLineAdmin, AmenitiesAdmin, ComplementaryAdmin]
+	inlines = [RoomImageLineAdmin]
 
 
 class ActivityImageLineAdmin(NestedTabularInline):
@@ -51,3 +51,10 @@ class BookingAdmin(admin.ModelAdmin):
 	list_display_links = ['id', 'email', 'phone']
 	list_filter = ['status']
 	search_fields = ['email', 'phone', 'full_name']
+
+
+
+@admin.register(Social)
+class SocialAdmin(admin.ModelAdmin):
+	list_display = ['id', 'type', 'url', 'description']
+	list_display_links = ['id', 'type', 'url']

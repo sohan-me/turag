@@ -4,8 +4,9 @@ from rest_framework.views import APIView
 from .models import *
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import  AllowAny
-from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer
+from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer
 from rest_framework.response import Response
+from .utils import Util
 
 
 # Create your views here.
@@ -22,9 +23,19 @@ class BookingView(APIView):
         request=BookingSerializer
     )
 	def post(self, request):
+
 		serializer = self.serializer_class(data=request.data)
 		if serializer.is_valid():
 			serializer.save()
+
+			email_data = {
+				'subject': f'Room Booking Request Received.',
+				'body': f'''Dear {request.data.get('full_name')},\nThis email confirms that we have received your room booking request for {request.data['check_in']} to {request.data['check_out']}.\nWe are currently reviewing your request and will contact you shortly with an update on its status.\nThank you for your patience.\nSincerely,\nTurag Resort''',
+				'to_email': request.data.get('email'),
+			}
+
+			# Send email to user upon booking request
+			Util.send_email(email_data)
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
 		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 			
@@ -93,3 +104,20 @@ class ActivityViewSet(viewsets.ViewSet):
 			raise NotFound(detail='Activity not found')
 
 
+
+
+class SocialViewSet(viewsets.ViewSet):
+	serializer_class = SocialSerializer
+	permission_classes = [AllowAny]
+
+	def get_queryset(self):
+		return Social.objects.all()
+
+	@extend_schema(
+		description='Get list of all social links',
+		responses={200:SocialSerializer(many=True)}
+		)
+	def list(self, request):
+		queryset = self.get_queryset()
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
