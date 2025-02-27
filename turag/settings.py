@@ -34,7 +34,8 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin',
+    'django.contrib.sitemaps',
     'nested_admin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,15 +78,19 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-JAZZMIN_SETTINGS = {
-    "site_title": "Turag Admin",
-    "site_header": "Turag",
-    "site_brand": "Turag",
-    "welcome_sign": "Welcome to the Turag Admin",
-    "copyright": "Turag Resort Ltd",
+# JAZZMIN_SETTINGS = {
+#     "site_title": "Turag Admin",
+#     "site_header": "Turag",
+#     "site_brand": "Turag",
+#     "welcome_sign": "Welcome to the Turag Admin",
+#     "copyright": "Turag Resort Ltd",
 
 
-}
+# }
+
+# JAZZMIN_UI_TWEAKS = {
+#     "theme": "darkly",
+# }
 
 
 MIDDLEWARE = [

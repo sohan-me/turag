@@ -73,3 +73,11 @@ class GallerySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Gallery
 		fields = '__all__'
+
+
+
+
+class ContactSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Contact
+		exclude = ['mark_as_read']

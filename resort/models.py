@@ -214,3 +214,18 @@ class Gallery(TimeStamp):
 
 	def __str__(self):
 		return self.type
+
+
+
+# Model for storing user contact messages
+class Contact(TimeStamp):
+
+	full_name = models.CharField(max_length=55)
+	email = models.EmailField(null=True, blank=True)
+	phone = models.CharField(max_length=20, null=True, blank=True)
+	subject = models.CharField(max_length=300, null=True, blank=True)
+	comment = models.TextField(null=True, blank=True)
+	mark_as_read = models.BooleanField(default=False)
+
+	def __str__(self):
+		return self.full_name + ' ' + self.subject

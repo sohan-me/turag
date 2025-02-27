@@ -65,3 +65,12 @@ class SocialAdmin(admin.ModelAdmin):
 class GalleryAdmin(admin.ModelAdmin):
 	list_display = ['type', 'image', 'description']
 	list_display_links = ['type', 'image', 'description']
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+	list_display = ['full_name', 'email', 'phone', 'subject', 'mark_as_read']
+	list_display_links = ['full_name', 'email', 'phone', 'subject']
+	list_editable = ['mark_as_read']
+	search_fields = ['email', 'phone', 'full_name']
+	list_filter = ['mark_as_read']

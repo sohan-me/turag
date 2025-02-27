@@ -12,5 +12,6 @@ router.register(r'gallery', views.GalleryViewSet, basename='gallery')
 
 urlpatterns = [
 	path('', include(router.urls)),
-	path('booking/', views.BookingView.as_view())	
+	path('booking/', views.BookingView.as_view()),
+	path('contact/', views.ContactView.as_view()),	
 ]

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .models import *
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import  AllowAny
-from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer
+from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer, ContactSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .utils import Util
@@ -173,3 +173,27 @@ class GalleryViewSet(viewsets.ViewSet):
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+
+class ContactView(APIView):
+	serializer_class = ContactSerializer
+	permission_classes = [AllowAny]
+
+
+	@extend_schema(
+		description='Contact endpoint for user.',
+		request=ContactSerializer
+		)
+	def post(self, request):
+		serializer = self.serializer_class(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+
+			email_data = {
+				'subject':'Turag WaterResort: We received your message.',
+				'body': f'''Dear {request.data['full_name']},\nThank you for contacting us. We have received your message regarding ({request.data['subject']}). We will review your inquiry and get back to you promptly.\nThank you,\nTurag Resort Team''',
+				'to_email': request.data['email']			
+			}
+
+			Util.send_email(email_data)
+			return Response(status=status.HTTP_200_OK)
