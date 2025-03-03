@@ -28,8 +28,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Room
-		fields = ['id', 'title', 'description', 'cost', 'type', 'tags', 'is_available', 'images', 'amenities', 'complementary']
-		read_only_fields = ['id']
+		fields = ['id', 'title', 'slug', 'description', 'cost', 'type', 'tags', 'is_available', 'images', 'amenities', 'complementary']
+		read_only_fields = ['id', 'slug']
 
 
 class ActivityImageLineSerializer(serializers.ModelSerializer):
@@ -43,8 +43,8 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Activity
-		fields = ['id', 'title', 'description', 'type', 'tags', 'images']
-		read_only_fields = ['id']
+		fields = ['id', 'title', 'slug', 'description', 'type', 'tags', 'images']
+		read_only_fields = ['id', 'slug']
 
 
 
