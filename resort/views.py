@@ -39,7 +39,7 @@ class BookingView(APIView):
 			# Send email to user upon booking request
 			Util.send_email(email_data)
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 			
 
 

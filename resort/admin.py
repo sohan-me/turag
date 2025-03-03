@@ -60,6 +60,11 @@ class BookingAdmin(admin.ModelAdmin):
 class SocialAdmin(admin.ModelAdmin):
 	list_display = ['id', 'facebook', 'linkedin', 'instagram', 'youtube', 'tiktok', 'pinterest', 'whatsapp', 'twitter']
 
+	def has_add_permission(self, request):
+		if self.model.objects.exists():
+			return False
+		return super().has_add_permission(request)
+
 
 
 @admin.register(Gallery)
