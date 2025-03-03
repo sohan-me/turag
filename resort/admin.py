@@ -24,6 +24,7 @@ class RoomAdmin(NestedModelAdmin):
 	list_display = ['id', 'title', 'cost', 'type', 'venu', 'tags', 'is_available']
 	list_display_links = ['title']
 	list_filter = ['type', 'is_available', 'venu']
+	prepopulated_fields = {'slug': ('title', )}
 
 	inlines = [RoomImageLineAdmin]
 
@@ -40,6 +41,7 @@ class ActivityAdmin(NestedModelAdmin):
 	list_display = ['id', 'title', 'type', 'venu', 'tags']
 	list_display_links = ['title']
 	list_filter = ['type', 'venu']
+	prepopulated_fields = {'slug': ('title', )}
 
 	inlines = [ActivityImageLineAdmin]
 

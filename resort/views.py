@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from .models import *
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework.permissions import  AllowAny
 from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer, ContactSerializer
 from rest_framework.response import Response
@@ -51,52 +51,35 @@ class RoomViewSet(viewsets.ViewSet):
 	def get_queryset(self):
 		return Room.objects.prefetch_related('room_image').prefetch_related('amenities').prefetch_related('complementary')
 
+
+
 	@extend_schema(
-		description='Get list of all the rooms.',
-		responses={200: RoomSerializer(many=True)}
+		description='Get list of all the rooms or use api/room/?type={type}&venu={venu} to filter rooms.',
+		responses={200: RoomSerializer(many=True)},
+		parameters=[
+        OpenApiParameter(name='type', description="Filter rooms by type.", required=False, type=str),
+        OpenApiParameter(name='venu', description="Filter rooms by venu.", required=False, type=str),
+    	],
 	)
 	def list(self, request):
 		queryset = self.get_queryset()
+	
+		type = request.query_params.get('type', None)
+		venu = request.query_params.get('venu', None)
+
+
+		if type:
+			queryset = queryset.filter(type=type)
+
+		if venu:
+			queryset = queryset.filter(venu=venu)
+
 		if not queryset.exists():
-			return Response(
-				{'detail':'No rooms found.'}, status=status.HTTP_400_BAD_REQUEST
-				)
+			return Response({"detail": "No rooms found for the specified filters."},status=status.HTTP_404_NOT_FOUND)
+
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-	@action(detail=False, methods=['get'], url_path='by-type/(?P<type>[^/.]+)')
-	@extend_schema(
-		description="Get list of rooms by type.",
-		responses={200:RoomSerializer(many=True)}
-		)
-	def list_by_type(self, request, type=None):
-		queryset = self.get_queryset().filter(type=type)
-		if not queryset.exists():
-			return Response(
-				{"detail": "No room found for the specified type."},
-				status=status.HTTP_404_NOT_FOUND
-			)
-		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-
-	@action(detail=False, methods=['get'], url_path='by-venu/(?P<venu>[^/.]+)')
-	@extend_schema(
-		description="Get list of rooms by Venu.",
-		responses={200:RoomSerializer(many=True)}
-		)
-	def list_by_venu(self, request, venu=None):
-		queryset = self.get_queryset().filter(venu=venu)
-		if not queryset.exists():
-			return Response(
-				{"detail": "No room found for the specified venu."},
-				status=status.HTTP_404_NOT_FOUND
-			)
-		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK)  
 
 
 
@@ -123,52 +106,31 @@ class ActivityViewSet(viewsets.ViewSet):
 		return Activity.objects.prefetch_related('activity_image')
 
 	@extend_schema(
-		description='Get list of all the activities.',
+		description='Get list of all the activities or use api/activity/?type={type}&venu={venu} to filter activities.',
 		responses={200: ActivitySerializer(many=True)},
+		parameters=[
+        OpenApiParameter(name='type', description="Filter rooms by type.", required=False, type=str),
+        OpenApiParameter(name='venu', description="Filter rooms by venu.", required=False, type=str),
+    	],
 	)
 	def list(self, request):
 		queryset = self.get_queryset()
+
+		type = request.query_params.get('type', None)
+		venu = request.query_params.get('venu', None)
+
+
+		if type:
+			queryset = queryset.filter(type=type)
+
+		if venu:
+			queryset = queryset.filter(venu=venu)
+
 		if not queryset.exists():
-			return Response(
-				{'detail':'No activities found.'}, status=status.HTTP_400_BAD_REQUEST
-				)
+			return Response({"detail": "No activities found for the specified filters."},status=status.HTTP_404_NOT_FOUND)
+
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-	@action(detail=False, methods=['get'], url_path='by-type/(?P<type>[^/.]+)')
-	@extend_schema(
-		description="Get list of activities by type.",
-		responses={200:ActivitySerializer(many=True)}
-		)
-	def list_by_type(self, request, type=None):
-		queryset = self.get_queryset().filter(type=type)
-		if not queryset.exists():
-			return Response(
-				{"detail": "No activities found for the specified type."},
-				status=status.HTTP_404_NOT_FOUND
-			)
-		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
-	@action(detail=False, methods=['get'], url_path='by-venu/(?P<venu>[^/.]+)')
-	@extend_schema(
-		description="Get list of activities by venu.",
-		responses={200:ActivitySerializer(many=True)}
-		)
-	def list_by_venu(self, request, venu=None):
-		queryset = self.get_queryset().filter(venu=venu)
-		if not queryset.exists():
-			return Response(
-				{"detail": "No activities found for the specified venu."},
-				status=status.HTTP_404_NOT_FOUND
-			)
-		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 
