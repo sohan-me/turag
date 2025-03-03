@@ -187,23 +187,16 @@ class Booking(TimeStamp):
 
 class Social(TimeStamp):
 
-	Type = [
-		('Facebook', 'Facebook'),
-		('Linkedin', 'Linkedin'),
-		('Instagram', 'Instagram'),
-		('Youtube', 'Youtube'),
-		('Tiktok', 'Tiktok'),
-		('Pinterest', 'Pinterest'),
-		('Whatsapp', 'Whatsapp'),
-		('Twitter', 'Twitter'),
-	]
+	facebook = models.URLField(max_length=300, null=True, blank=True)
+	linkedin = models.URLField(max_length=300, null=True, blank=True)
+	instagram = models.URLField(max_length=300, null=True, blank=True)
+	youtube = models.URLField(max_length=300, null=True, blank=True)
+	tiktok = models.URLField(max_length=300, null=True, blank=True)
+	pinterest = models.URLField(max_length=300, null=True, blank=True)
+	whatsapp = models.URLField(max_length=300, null=True, blank=True)
+	twitter = models.URLField(max_length=300, null=True, blank=True)
+	
 
-	type = models.CharField(choices=Type, max_length=20)
-	url = models.URLField(max_length=200)
-	description = models.TextField(null=True, blank=True)
-
-	def __str__(self):
-		return self.type + ' - ' + self.url
 
 
 

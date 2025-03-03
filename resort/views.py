@@ -110,7 +110,7 @@ class ActivityViewSet(viewsets.ViewSet):
 		responses={200: ActivitySerializer(many=True)},
 		parameters=[
         OpenApiParameter(name='type', description="Filter rooms by type.", required=False, type=str),
-        OpenApiParameter(name='venu', description="Filter rooms by venue.", required=False, type=str),
+        OpenApiParameter(name='venue', description="Filter rooms by venue.", required=False, type=str),
     	],
 	)
 	def list(self, request):
@@ -157,15 +157,17 @@ class SocialViewSet(viewsets.ViewSet):
 		return Social.objects.all()
 
 	@extend_schema(
-		description='Get list of all social links',
-		responses={200:SocialSerializer(many=True)}
+		description='Get social links.',
+		responses={200:SocialSerializer()},
 		)
 	def list(self, request):
 		queryset = self.get_queryset()
+
 		if not queryset.exists():
 			return Response(
 				{'detail':'No social links found.'}, status=status.HTTP_400_BAD_REQUEST
-				)
+			)
+
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -58,8 +58,7 @@ class BookingAdmin(admin.ModelAdmin):
 
 @admin.register(Social)
 class SocialAdmin(admin.ModelAdmin):
-	list_display = ['id', 'type', 'url', 'description']
-	list_display_links = ['id', 'type', 'url']
+	list_display = ['id', 'facebook', 'linkedin', 'instagram', 'youtube', 'tiktok', 'pinterest', 'whatsapp', 'twitter']
 
 
 
