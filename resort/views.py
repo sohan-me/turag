@@ -78,7 +78,25 @@ class RoomViewSet(viewsets.ViewSet):
 				status=status.HTTP_404_NOT_FOUND
 			)
 		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK) 
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+	@action(detail=False, methods=['get'], url_path='by-venu/(?P<venu>[^/.]+)')
+	@extend_schema(
+		description="Get list of rooms by Venu.",
+		responses={200:RoomSerializer(many=True)}
+		)
+	def list_by_venu(self, request, venu=None):
+		queryset = self.get_queryset().filter(venu=venu)
+		if not queryset.exists():
+			return Response(
+				{"detail": "No room found for the specified venu."},
+				status=status.HTTP_404_NOT_FOUND
+			)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)  
 
 
 
@@ -132,7 +150,25 @@ class ActivityViewSet(viewsets.ViewSet):
 				status=status.HTTP_404_NOT_FOUND
 			)
 		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer.data, status=status.HTTP_200_OK) 
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+	@action(detail=False, methods=['get'], url_path='by-venu/(?P<venu>[^/.]+)')
+	@extend_schema(
+		description="Get list of activities by venu.",
+		responses={200:ActivitySerializer(many=True)}
+		)
+	def list_by_venu(self, request, venu=None):
+		queryset = self.get_queryset().filter(venu=venu)
+		if not queryset.exists():
+			return Response(
+				{"detail": "No activities found for the specified venu."},
+				status=status.HTTP_404_NOT_FOUND
+			)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 
