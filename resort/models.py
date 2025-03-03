@@ -66,7 +66,7 @@ class Room(TimeStamp):
 	dynamic_image = models.ImageField(upload_to='room/dynamic_image/', null=True, blank=True)
 	cost = models.DecimalField(max_digits=10, decimal_places=2)
 	type = models.CharField(choices=TYPE, max_length=20)
-	venu = models.CharField(choices=VENU, max_length=20)
+	venue = models.CharField(choices=VENU, max_length=20)
 	tags = models.CharField(max_length=300)
 	amenities = models.ManyToManyField(Amenities, blank=True, related_name='room')
 	complementary = models.ManyToManyField(Complementary, blank=True, related_name='room')
@@ -124,7 +124,7 @@ class Activity(TimeStamp):
 	slug = models.SlugField(max_length=260)
 	description = models.TextField()
 	type = models.CharField(max_length=20, choices=TYPE)
-	venu = models.CharField(choices=VENU, max_length=20)
+	venue = models.CharField(choices=VENU, max_length=20)
 	tags = models.CharField(max_length=300, null=True, blank=True)
 	
 

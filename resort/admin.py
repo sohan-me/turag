@@ -21,9 +21,9 @@ class ComplementaryAdmin(admin.ModelAdmin):
 
 @admin.register(Room)
 class RoomAdmin(NestedModelAdmin):
-	list_display = ['id', 'title', 'cost', 'type', 'venu', 'tags', 'is_available']
+	list_display = ['id', 'title', 'cost', 'type', 'venue', 'tags', 'is_available']
 	list_display_links = ['title']
-	list_filter = ['type', 'is_available', 'venu']
+	list_filter = ['type', 'is_available', 'venue']
 	prepopulated_fields = {'slug': ('title', )}
 
 	inlines = [RoomImageLineAdmin]
@@ -38,9 +38,9 @@ class ActivityImageLineAdmin(NestedTabularInline):
 
 @admin.register(Activity)
 class ActivityAdmin(NestedModelAdmin):
-	list_display = ['id', 'title', 'type', 'venu', 'tags']
+	list_display = ['id', 'title', 'type', 'venue', 'tags']
 	list_display_links = ['title']
-	list_filter = ['type', 'venu']
+	list_filter = ['type', 'venue']
 	prepopulated_fields = {'slug': ('title', )}
 
 	inlines = [ActivityImageLineAdmin]

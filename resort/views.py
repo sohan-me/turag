@@ -54,25 +54,25 @@ class RoomViewSet(viewsets.ViewSet):
 
 
 	@extend_schema(
-		description='Get list of all the rooms or use api/room/?type={type}&venu={venu} to filter rooms.',
+		description='Get list of all the rooms or use api/room/?type={type}&venue={venue} to filter rooms.',
 		responses={200: RoomSerializer(many=True)},
 		parameters=[
         OpenApiParameter(name='type', description="Filter rooms by type.", required=False, type=str),
-        OpenApiParameter(name='venu', description="Filter rooms by venu.", required=False, type=str),
+        OpenApiParameter(name='venue', description="Filter rooms by venue.", required=False, type=str),
     	],
 	)
 	def list(self, request):
 		queryset = self.get_queryset()
 	
 		type = request.query_params.get('type', None)
-		venu = request.query_params.get('venu', None)
+		venue = request.query_params.get('venue', None)
 
 
 		if type:
 			queryset = queryset.filter(type=type)
 
-		if venu:
-			queryset = queryset.filter(venu=venu)
+		if venue:
+			queryset = queryset.filter(venue=venue)
 
 		if not queryset.exists():
 			return Response({"detail": "No rooms found for the specified filters."},status=status.HTTP_404_NOT_FOUND)
@@ -106,25 +106,25 @@ class ActivityViewSet(viewsets.ViewSet):
 		return Activity.objects.prefetch_related('activity_image')
 
 	@extend_schema(
-		description='Get list of all the activities or use api/activity/?type={type}&venu={venu} to filter activities.',
+		description='Get list of all the activities or use api/activity/?type={type}&venue={venue} to filter activities.',
 		responses={200: ActivitySerializer(many=True)},
 		parameters=[
         OpenApiParameter(name='type', description="Filter rooms by type.", required=False, type=str),
-        OpenApiParameter(name='venu', description="Filter rooms by venu.", required=False, type=str),
+        OpenApiParameter(name='venu', description="Filter rooms by venue.", required=False, type=str),
     	],
 	)
 	def list(self, request):
 		queryset = self.get_queryset()
 
 		type = request.query_params.get('type', None)
-		venu = request.query_params.get('venu', None)
+		venue = request.query_params.get('venue', None)
 
 
 		if type:
 			queryset = queryset.filter(type=type)
 
-		if venu:
-			queryset = queryset.filter(venu=venu)
+		if venue:
+			queryset = queryset.filter(venue=venue)
 
 		if not queryset.exists():
 			return Response({"detail": "No activities found for the specified filters."},status=status.HTTP_404_NOT_FOUND)
