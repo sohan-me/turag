@@ -8,6 +8,7 @@ from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, 
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .utils import Util
+from django.http import Http404
 
 
 # Create your views here.
@@ -63,6 +64,24 @@ class RoomViewSet(viewsets.ViewSet):
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+	@action(detail=False, methods=['get'], url_path='by-type/(?P<type>[^/.]+)')
+	@extend_schema(
+		description="Get list of rooms by type.",
+		responses={200:RoomSerializer(many=True)}
+		)
+	def list_by_type(self, request, type=None):
+		queryset = self.get_queryset().filter(type=type)
+		if not queryset.exists():
+			return Response(
+				{"detail": "No room found for the specified type."},
+				status=status.HTTP_404_NOT_FOUND
+			)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK) 
+
+
+
 	@extend_schema(
 		description='Retrieve a room by it`s slug.',
 		responses={200: RoomSerializer}
@@ -73,7 +92,7 @@ class RoomViewSet(viewsets.ViewSet):
 			serializer = self.serializer_class(room)
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		except Room.DoesNotExist:
-			raise NotFound(detail='Room not Found')
+			raise Http404('Room not found')
 			
 
 
@@ -98,6 +117,25 @@ class ActivityViewSet(viewsets.ViewSet):
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+
+	@action(detail=False, methods=['get'], url_path='by-type/(?P<type>[^/.]+)')
+	@extend_schema(
+		description="Get list of activities by type.",
+		responses={200:ActivitySerializer(many=True)}
+		)
+	def list_by_type(self, request, type=None):
+		queryset = self.get_queryset().filter(type=type)
+		if not queryset.exists():
+			return Response(
+				{"detail": "No activities found for the specified type."},
+				status=status.HTTP_404_NOT_FOUND
+			)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK) 
+
+
+
 	@extend_schema(
 		description='Retrieve a activity by its slug.',
 		responses={200: ActivitySerializer},
@@ -108,7 +146,7 @@ class ActivityViewSet(viewsets.ViewSet):
 			serializer = self.serializer_class(activity)
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		except Activity.DoesNotExist:
-			raise NotFound(detail='Activity not found')
+			raise Http404('Activity not Found')
 
 
 

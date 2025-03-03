@@ -51,6 +51,7 @@ class Room(TimeStamp):
 		('Duplex', 'Duplex'),
 		('Lake View', 'Lake View'),
 		('River View', 'River View'),
+		('Delux', 'Delux'),
 
 	]
 
