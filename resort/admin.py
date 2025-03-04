@@ -69,7 +69,7 @@ class SocialAdmin(admin.ModelAdmin):
 
 @admin.register(Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-	list_display = ['type', 'image', 'description']
+	list_display = ['type', 'image', 'alt_text', 'description']
 	list_display_links = ['type', 'image', 'description']
 
 
@@ -80,3 +80,11 @@ class ContactAdmin(admin.ModelAdmin):
 	list_editable = ['mark_as_read']
 	search_fields = ['email', 'phone', 'full_name']
 	list_filter = ['mark_as_read']
+
+
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+	list_display = ['id', 'title', 'slug', 'alt_text', 'tags', 'created_at']
+	list_display_links = ['id', 'title']
+	prepopulated_fields = {'slug': ('title', )}

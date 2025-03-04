@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .models import *
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework.permissions import  AllowAny
-from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer, ContactSerializer
+from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer, ContactSerializer, BlogSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .utils import Util
@@ -52,7 +52,7 @@ class RoomViewSet(viewsets.ViewSet):
 		return Room.objects.prefetch_related('room_image').prefetch_related('amenities').prefetch_related('complementary')
 
 
-
+	# Decorator for documenting API and OpenApiParameter for swagger ui param unput field
 	@extend_schema(
 		description='Get list of all the rooms or use api/room/?type={type}&venue={venue} to filter rooms.',
 		responses={200: RoomSerializer(many=True)},
@@ -105,6 +105,8 @@ class ActivityViewSet(viewsets.ViewSet):
 	def get_queryset(self):
 		return Activity.objects.prefetch_related('activity_image')
 
+
+	# Decorator for documenting API and OpenApiParameter for swagger ui param unput field
 	@extend_schema(
 		description='Get list of all the activities or use api/activity/?type={type}&venue={venue} to filter activities.',
 		responses={200: ActivitySerializer(many=True)},
@@ -235,3 +237,45 @@ class ContactView(APIView):
 
 			Util.send_email(email_data)
 			return Response(status=status.HTTP_200_OK)
+
+
+
+
+class BlogView(viewsets.ViewSet):
+	serializer_class = BlogSerializer
+	permission_classes = [AllowAny]
+	lookup_field = 'slug'
+
+	def get_queryset(self):
+		return Blog.objects.all()
+
+
+
+	@extend_schema(
+		description='Get list of all blogs.',
+		responses={200:BlogSerializer(many=True)},
+	)
+	def list(self, request):
+		queryset = self.get_queryset()
+
+		if not queryset.exists():
+			return Response({'detail':'No blogs found'}, status=status.HTTP_404_NOT_FOUND)
+
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+	@extend_schema(
+		description='Retrieve a blog with it`s slug',
+		responses={200:BlogSerializer},
+	)
+	def retrieve(self, request, slug=None):
+		try:
+			print(slug)
+			blog = self.get_queryset().get(slug=slug)
+			print(blog)
+			serializer = self.serializer_class(blog)
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		except Blog.DoesNotExist:
+			raise Http404('No blog found.')

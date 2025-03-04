@@ -81,3 +81,13 @@ class ContactSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Contact
 		exclude = ['mark_as_read']
+
+
+
+class BlogSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Blog
+		fields = '__all__'
+
+
+	

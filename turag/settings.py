@@ -49,12 +49,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'drf_spectacular_sidecar',
-
+    'tinymce',
+    'django_quill',
 
     #Internal packages and apps
     'resort.apps.ResortConfig',
 
 ]
+
+
+CKEDITOR_BASEPATH = "/my_static/ckeditor/ckeditor/"
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -64,6 +68,7 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    
 }
 
 SPECTACULAR_SETTINGS = {
