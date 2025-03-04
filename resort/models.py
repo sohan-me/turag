@@ -122,6 +122,7 @@ class Activity(TimeStamp):
 
 	title = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=260)
+	slogan = models.CharField(max_length=300, null=True, blank=True)
 	description = models.TextField()
 	type = models.CharField(max_length=20, choices=TYPE)
 	venue = models.CharField(choices=VENU, max_length=20)
