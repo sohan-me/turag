@@ -250,8 +250,9 @@ class Blog(TimeStamp):
 	slug = models.CharField(max_length=160)
 	meta_description = models.TextField(null=True, blank=True)
 	description = HTMLField()
+	thumbnail = models.ImageField(upload_to='blogs/thumbnail/')
 	image = models.ImageField(upload_to='blogs/', null=True, blank=True)
-	alt_text = models.CharField(max_length=100)
+	alt_text = models.CharField(max_length=100, null=True, blank=True)
 	tags = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):
