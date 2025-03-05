@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    # 'jazzmin',
+    'jazzmin',
     'django.contrib.sitemaps',
     'nested_admin',
     'django.contrib.admin',
@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'tinymce',
-    'django_quill',
 
     #Internal packages and apps
     'resort.apps.ResortConfig',
@@ -58,7 +57,6 @@ INSTALLED_APPS = [
 ]
 
 
-CKEDITOR_BASEPATH = "/my_static/ckeditor/ckeditor/"
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

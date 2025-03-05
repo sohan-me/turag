@@ -3,7 +3,6 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from django.db.models.signals import post_save, pre_save
 from tinymce.models import HTMLField
-from django_quill.fields import QuillField
 # Create your models here.
 
 
@@ -97,7 +96,7 @@ def assign_room_slug(sender, instance, **kwargs):
 class RoomImageLine(models.Model):
 	room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_image')
 	image = models.ImageField(upload_to='room/images/')
-	alt_text = models.CharField(max_length=100, null=True, blank=True)
+	alt_text = models.CharField(max_length=100)
 	is_featured = models.BooleanField(default=False)
 
 	def __str__(self):
@@ -156,7 +155,7 @@ def assign_activity_slug(sender, instance, **kwargs):
 class ActivityImageLine(models.Model):
 	activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='activity_image')
 	image = models.ImageField(upload_to='activity/images/')
-	alt_text = models.CharField(max_length=100, null=True, blank=True)
+	alt_text = models.CharField(max_length=100)
 	is_featured = models.BooleanField(default=False)
 
 	def __str__(self):
@@ -218,7 +217,7 @@ class Gallery(TimeStamp):
 
 	type = models.CharField(choices=Type, max_length=20)
 	image = models.ImageField(upload_to='gallery/')
-	alt_text = models.CharField(max_length=100, null=True, blank=True)
+	alt_text = models.CharField(max_length=100)
 	description = models.TextField(null=True, blank=True)
 
 	class Meta:
@@ -252,7 +251,7 @@ class Blog(TimeStamp):
 	meta_description = models.TextField(null=True, blank=True)
 	description = HTMLField()
 	image = models.ImageField(upload_to='blogs/', null=True, blank=True)
-	alt_text = models.CharField(max_length=100, null=True, blank=True)
+	alt_text = models.CharField(max_length=100)
 	tags = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):

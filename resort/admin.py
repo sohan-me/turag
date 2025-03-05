@@ -29,7 +29,7 @@ class RoomAdmin(NestedModelAdmin):
 	inlines = [RoomImageLineAdmin]
 
 
-class ActivityImageLineAdmin(NestedTabularInline):
+class ActivityImageLineAdmin(NestedStackedInline):
 	model = ActivityImageLine
 	extra = 4
 	can_delete = True

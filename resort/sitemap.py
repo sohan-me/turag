@@ -4,8 +4,8 @@ from .models import Room, Activity, Gallery, Social, Contact, Blog
 
 #Sitemap for Blog model
 class BlogSitemap(Sitemap):
-    changefreq = 'weekly'
-    priority = 0.8
+    changefreq = 'daily'
+    priority = 0.9
 
     def items(self):
         return Blog.objects.all()
