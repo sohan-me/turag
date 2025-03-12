@@ -1,8 +1,10 @@
+import uuid
 from django.db import models
 from django.dispatch import receiver
 from django.utils.text import slugify
 from django.db.models.signals import post_save, pre_save
 from tinymce.models import HTMLField
+from .utils import Util
 # Create your models here.
 
 
@@ -168,24 +170,99 @@ class Booking(TimeStamp):
 
 	STATUS = [
 		('Pending', 'Pending'),
+
 		('Confirmed', 'Confirmed'),
 		('Cancelled', 'Cancelled'),
+
+		('Partially Paid', 'Partially Paid'),
+		('Fully Paid', 'Fully Paid'),
 	]
+
+
 
 	room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True)
 	full_name = models.CharField(max_length=150)
 	email = models.EmailField(null=True, blank=True)
 	phone = models.CharField(max_length=20, null=True, blank=True)
 	adults = models.PositiveIntegerField()
-	children = models.PositiveIntegerField()
+	children = models.PositiveIntegerField(null=True, blank=True)
 	check_in = models.DateField()
 	check_out = models.DateField()
 	address = models.CharField(max_length=255, null=True, blank=True)
 	remarks = models.CharField(max_length=255, null=True, blank=True)
+	booking_number = models.CharField(max_length=100, null=True, blank=True)
 	status = models.CharField(max_length=100, choices=STATUS, default='Pending')
+
 
 	def __str__(self):
 		return self.full_name
+
+	# Generate Booking Number
+	def set_booking_number(self):
+		unique_id = uuid.uuid4().hex[:12]
+		email_part = self.email.split('@')[0] if self.email else "guest.who"
+		self.booking_number = f"{email_part.lower()}-{unique_id}"
+
+	# Assign the booking number if its empty
+	def save(self, *args, **kwargs):
+		if not self.booking_number:
+			self.set_booking_number()
+
+		# Send email to a user when booking available and marked by admin
+		if self.status == 'Confirmed':
+			data = {
+				'full_name': self.full_name,
+				'to_email': self.email,
+				'room_title': self.room.title,
+				'check_in': self.check_in,
+				'check_out': self.check_out,
+				'booking_id': self.booking_number,
+			}
+			Util.send_payment_email(data)
+
+		if self.status == 'Cancelled':
+			data = {
+				'full_name': self.full_name,
+				'to_email': self.email,
+				'room_title': self.room.title,
+				'check_in': self.check_in,
+				'check_out': self.check_out,
+				'booking_id': self.booking_number,
+			}
+			Util.send_cancellation_email(data)
+		super().save(*args, **kwargs)
+
+
+
+class Transaction(models.Model):
+	PAYMENT_METHOD = (
+			('Bkash', 'Bkash'),
+			('Rocket', 'Rocket'),
+			('Nagad', 'Nagad'),
+			('Bank', 'Bank'),
+		)
+
+	booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, related_name='transaction')
+	payment_method = models.CharField(max_length=100, choices=PAYMENT_METHOD)
+	trans_id = models.CharField(max_length=200, unique=True)
+	amount = models.DecimalField(max_digits=10, decimal_places=2)
+	document = models.ImageField(upload_to='transaction/')
+	is_approved = models.BooleanField(default=False)
+
+	def __str__(self):
+		return f'{self.trans_id} - {self.amount}' 
+
+	def save(self, *args, **kwargs):
+		if self.approve_payment and self.booking:
+			book_cost = self.booking.room.cost
+			if self.amount >= book_cost:
+				booking.status = 'Fully Paid'
+			else:
+				booking.status = 'Partially Paid'
+
+			self.booking.save()
+		super().save(*args, **kwargs)
+
 
 
 
@@ -250,7 +327,6 @@ class Blog(TimeStamp):
 	slug = models.CharField(max_length=160)
 	meta_description = models.TextField(null=True, blank=True)
 	description = HTMLField()
-	thumbnail = models.ImageField(upload_to='blogs/thumbnail/')
 	image = models.ImageField(upload_to='blogs/', null=True, blank=True)
 	alt_text = models.CharField(max_length=100, null=True, blank=True)
 	tags = models.CharField(max_length=200, null=True, blank=True)

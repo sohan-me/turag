@@ -88,3 +88,13 @@ class BlogAdmin(admin.ModelAdmin):
 	list_display = ['id', 'title', 'slug', 'alt_text', 'tags', 'created_at']
 	list_display_links = ['id', 'title']
 	prepopulated_fields = {'slug': ('title', )}
+
+
+
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+	list_display = ['id', 'booking', 'payment_method', 'trans_id', 'amount', 'is_approved']
+	list_display_links = ['id', 'booking', 'payment_method', 'trans_id']
+	list_filter = ['is_approved', 'payment_method']
+	search_fields = ['trans_id']

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from .models import *
@@ -29,15 +29,6 @@ class BookingView(APIView):
 		serializer = self.serializer_class(data=request.data)
 		if serializer.is_valid():
 			serializer.save()
-
-			email_data = {
-				'subject': f'Room Booking Request Received.',
-				'body': f'''Dear {request.data.get('full_name')},\nThis email confirms that we have received your room booking request for {request.data['check_in']} to {request.data['check_out']}.\nWe are currently reviewing your request and will contact you shortly with an update on its status.\nThank you for your patience.\nSincerely,\nTurag Resort''',
-				'to_email': request.data.get('email'),
-			}
-
-			# Send email to user upon booking request
-			Util.send_email(email_data)
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 			

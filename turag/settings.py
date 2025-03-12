@@ -208,6 +208,28 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+
+# For Production
+# STATIC_URL = '/static/'
+# STATIC_ROOT = '/home/turajytt/api.turagwaterfrontresort.com/static'
+
+
+
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = '/home/turajytt/api.turagwaterfrontresort.com/media'
+
+
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "django.core.files.storage.FileSystemStorage",
+#     },
+#     "staticfiles": {
+#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+#     },
+# }
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
