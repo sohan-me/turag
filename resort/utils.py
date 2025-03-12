@@ -179,3 +179,84 @@ class Util:
         )
     email.content_subtype = 'html'
     email.send()
+
+
+  @staticmethod
+  def send_transaction_email(data):
+
+    email = EmailMessage(
+        subject='Turag Resort: We received your payment.',
+        body=f"""
+        <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            padding: 20px;
+                        }}
+                        .container {{
+                            max-width: 600px;
+                            background: #ffffff;
+                            padding: 20px;
+                            margin: 0 auto;
+                            border-radius: 8px;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        }}
+                        .header {{
+                            text-align: center;
+                            margin-bottom: 20px;
+                        }}
+                        .header img {{
+                            max-width: 150px;
+                        }}
+                        .content {{
+                            font-size: 16px;
+                            line-height: 1.6;
+                            color: #333333;
+                        }}
+                        .footer {{
+                            margin-top: 20px;
+                            font-size: 14px;
+                            text-align: center;
+                            color: #B89146;
+                        }}
+                        ul li strong {{
+                            color: #B89146;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <img src="https://i.ibb.co.com/xSML0rg8/logo.png" alt="Turag Resort">
+                        </div>
+                        <div class="content">
+                          <p>Dear {data.get('full_name')},</p>
+                          <p>We are pleased to inform you that your payment has been successfully received, and your booking at <strong>Turag Waterfront Resort</strong> is now confirmed.</p>
+                          <p><strong>Booking Details (Requested):</strong></p>
+                          <ul>
+                              <li><strong>Booking ID:</strong> {data.get('booking_id')}</li>
+                              <li><strong>Transaction ID:</strong> {data.get('trans_id')}</li>
+                              <li><strong>Room Name:</strong> {data.get('room_title')}</li>
+                              <li><strong>Paid Amount :</strong> {data.get('paid_amount')}</li>
+                          </ul>
+                          <p>We look forward to welcoming you soon. If you have any special requests or require assistance, please feel free to contact us.</p>
+
+                          <p>For any inquiries, call us at <strong>+8801730863933</strong> or <strong>+8801730863934</strong>.</p>
+
+                          <p>Thank you for choosing <strong>Turag Waterfront Resort</strong>!</p>
+                      </div>
+                        <div class="footer">
+                            Sincerely, <br>
+                            <strong>Turag Waterfront Resort</strong>
+                        </div>
+                    </div>
+                </body>
+            </html>
+            """,
+            from_email='turagwaterfrontresort5541@gmail.com',
+            to=[data.get('to_email')],
+        )
+    email.content_subtype = 'html'
+    email.send()

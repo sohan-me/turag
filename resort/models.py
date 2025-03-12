@@ -261,6 +261,16 @@ class Transaction(models.Model):
 				booking.status = 'Partially Paid'
 
 			self.booking.save()
+			data = {
+				'full_name': self.booking.full_name,
+				'to_email': self.booking.email,
+				'room_title': self.booking.room.title,
+				'booking_id': self.booking.booking_number,
+				'trans_id': self.trans_id,
+				'paid_amount': self.amount,
+			}
+			Util.send_transaction_email(data)
+			
 		super().save(*args, **kwargs)
 
 
@@ -277,9 +287,6 @@ class Social(TimeStamp):
 	whatsapp = models.URLField(max_length=300, null=True, blank=True)
 	twitter = models.URLField(max_length=300, null=True, blank=True)
 	
-
-
-
 
 
 class Gallery(TimeStamp):
