@@ -354,3 +354,21 @@ class Blog(TimeStamp):
 
 	def __str__(self):
 		return self.title
+
+
+
+class About(TimeStamp):
+	address = models.CharField(max_length=200)
+	email = models.EmailField(null=True, blank=True)
+	phone = models.CharField(max_length=40)
+	facebook = models.URLField(null=True, blank=True)
+	instagram = models.URLField(null=True, blank=True)
+	youtube = models.URLField(null=True, blank=True)
+	linkedin = models.URLField(null=True, blank=True)
+	twitter = models.URLField(null=True, blank=True)
+	pinterest = models.URLField(null=True, blank=True)
+	tiktok = models.URLField(null=True, blank=True)
+
+
+	def __str__(self):
+		return self.address

@@ -110,3 +110,8 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
 		model = PaymentMethod
 		fields = '__all__'
 
+
+class AboutSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = About
+		fields = '__all__'

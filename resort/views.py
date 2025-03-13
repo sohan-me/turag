@@ -299,13 +299,32 @@ class PaymentMethodView(APIView):
 		return PaymentMethod.objects.all()
 
 	@extend_schema(
-		description='Retrieve a blog with it`s slug',
+		description='all payment methods',
 		responses={200:PaymentMethodSerializer},
 	)
 	def get(self, request):
 		queryset = self.get_queryset()
 		if not queryset.exists():
-			return Response({'detail':'No methods are found.'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'detail':'No methods are found.'}, status=status.HTTP_404_NOT_FOUND)
 		serializer = self.serializer_class(queryset, many=True)
 
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+class AboutView(APIView):
+	serializer_class = AboutSerializer
+	permission_classes = [AllowAny]
+
+	def get_queryset(self):
+		return About.objects.all()
+
+	@extend_schema(
+		description='get address, email, phone and social links for turag.'
+	)
+	def get(self, request):
+		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response({'detail':'No about informations are found !'}, status=status.HTTP_404_NOT_FOUND)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer,data, status=status.HTTP_200_OK)
