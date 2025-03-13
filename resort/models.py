@@ -274,7 +274,9 @@ class PaymentMethod(TimeStamp):
 			('Bkash', 'Bkash'),
 			('Rocket', 'Rocket'),
 			('Nagad', 'Nagad'),
+			('Upay', 'Upay'),
 			('Bank', 'Bank'),
+			('Other', 'Other'),
 		)
 
 	method_name = models.CharField(choices=PAYMENT_METHOD, max_length=50)
@@ -285,7 +287,7 @@ class PaymentMethod(TimeStamp):
 	ifsc_code = models.CharField(max_length=100)
 
 	def __str__(self):
-		return self.name
+		return self.method_name
 
 
 
