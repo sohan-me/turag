@@ -320,7 +320,8 @@ class AboutView(APIView):
 		return About.objects.all()
 
 	@extend_schema(
-		description='get address, email, phone and social links for turag.'
+		description='get address, email, phone and social links for turag.',
+		
 	)
 	def get(self, request):
 		queryset = self.get_queryset()

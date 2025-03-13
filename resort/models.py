@@ -281,6 +281,7 @@ class PaymentMethod(TimeStamp):
 
 	method_name = models.CharField(choices=PAYMENT_METHOD, max_length=50)
 	account_no = models.CharField(max_length=20, null=True, blank=True)
+	account_holder = models.CharField(max_length=100)
 	account_type = models.CharField(max_length=50)
 	banner = models.ImageField(upload_to='payment_method/banner/', null=True, blank=True)
 	qrcode = models.ImageField(upload_to='payment_method/qrcode', null=True, blank=True)
