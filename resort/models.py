@@ -19,6 +19,8 @@ class TimeStamp(models.Model):
 
 
 
+
+
 # Amenities model
 class Amenities(TimeStamp):
 	icon = models.ImageField(upload_to='room/amenities/', null=True, blank=True)
@@ -234,31 +236,25 @@ class Booking(TimeStamp):
 
 
 
-class Transaction(models.Model):
-	PAYMENT_METHOD = (
-			('Bkash', 'Bkash'),
-			('Rocket', 'Rocket'),
-			('Nagad', 'Nagad'),
-			('Bank', 'Bank'),
-		)
+class Transaction(TimeStamp):
 
 	booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, related_name='transaction')
-	payment_method = models.CharField(max_length=100, choices=PAYMENT_METHOD)
+	payment_method = models.CharField(max_length=100)
 	trans_id = models.CharField(max_length=200, unique=True)
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
-	document = models.ImageField(upload_to='transaction/')
+	document = models.ImageField(upload_to='transaction/', null=True, blank=True)
 	is_approved = models.BooleanField(default=False)
 
 	def __str__(self):
 		return f'{self.trans_id} - {self.amount}' 
 
 	def save(self, *args, **kwargs):
-		if self.approve_payment and self.booking:
+		if self.is_approved and self.booking:
 			book_cost = self.booking.room.cost
 			if self.amount >= book_cost:
-				booking.status = 'Fully Paid'
+				self.booking.status = 'Fully Paid'
 			else:
-				booking.status = 'Partially Paid'
+				self.booking.status = 'Partially Paid'
 
 			self.booking.save()
 			data = {
@@ -270,8 +266,26 @@ class Transaction(models.Model):
 				'paid_amount': self.amount,
 			}
 			Util.send_transaction_email(data)
-			
 		super().save(*args, **kwargs)
+
+
+class PaymentMethod(TimeStamp):
+	PAYMENT_METHOD = (
+			('Bkash', 'Bkash'),
+			('Rocket', 'Rocket'),
+			('Nagad', 'Nagad'),
+			('Bank', 'Bank'),
+		)
+
+	method_name = models.CharField(choices=PAYMENT_METHOD, max_length=50)
+	account_no = models.CharField(max_length=20, null=True, blank=True)
+	account_type = models.CharField(max_length=50)
+	banner = models.ImageField(upload_to='payment_method/banner/', null=True, blank=True)
+	qrcode = models.ImageField(upload_to='payment_method/qrcode', null=True, blank=True)
+	ifsc_code = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.name
 
 
 

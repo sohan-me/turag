@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .models import *
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework.permissions import  AllowAny
-from .serializers import BookingSerializer, RoomSerializer, ActivitySerializer, SocialSerializer, GallerySerializer, ContactSerializer, BlogSerializer
+from .serializers import *
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .utils import Util
@@ -263,10 +263,49 @@ class BlogView(viewsets.ViewSet):
 	)
 	def retrieve(self, request, slug=None):
 		try:
-			print(slug)
 			blog = self.get_queryset().get(slug=slug)
-			print(blog)
 			serializer = self.serializer_class(blog)
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		except Blog.DoesNotExist:
 			raise Http404('No blog found.')
+
+
+
+
+class TransactionView(APIView):
+	serializer_class = TransactionSerializer
+	permission_classes = [AllowAny]
+
+	@extend_schema(
+		description='make payment and submit payment information',
+		request=TransactionSerializer,
+	)
+	def post(self, request):
+		serializer = self.serializer_class(data=request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		else:
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class PaymentMethodView(APIView):
+	serializer_class = PaymentMethodSerializer
+	permission_classes = [AllowAny]
+
+	def get_queryset(self):
+		return PaymentMethod.objects.all()
+
+	@extend_schema(
+		description='Retrieve a blog with it`s slug',
+		responses={200:PaymentMethodSerializer},
+	)
+	def get(self, request):
+		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response({'detail':'No methods are found.'}, status=status.HTTP_400_BAD_REQUEST)
+		serializer = self.serializer_class(queryset, many=True)
+
+		return Response(serializer.data, status=status.HTTP_200_OK)

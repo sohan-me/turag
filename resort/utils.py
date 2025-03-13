@@ -101,7 +101,7 @@ class Util:
   # Email after booking cancellation by admin
   @staticmethod
   def send_cancellation_email(data):
-    payment_link = f"https://turagwaterfrontresort.com/payment/"
+    payment_link = f"https://turagwaterfrontresort.com/api/make-payment/"
 
     email = EmailMessage(
         subject='Turag Resort: Important Update on Your Booking Request',

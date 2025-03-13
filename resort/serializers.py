@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from django.shortcuts import get_object_or_404
 
 
 
@@ -90,4 +91,22 @@ class BlogSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-	
+class TransactionSerializer(serializers.ModelSerializer):
+	booking_id = serializers.CharField(write_only=True)
+	class Meta:
+		model = Transaction
+		fields = ['payment_method', 'trans_id', 'booking_id', 'amount', 'document']
+
+	def create(self, validated_data):
+		booking_number = validated_data.pop('booking_id', None)
+		booking = get_object_or_404(Booking, booking_number=booking_number) if booking_number else None
+		validated_data['booking'] = booking
+		return super().create(validated_data)
+
+
+
+class PaymentMethodSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = PaymentMethod
+		fields = '__all__'
+

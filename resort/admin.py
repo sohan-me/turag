@@ -98,3 +98,10 @@ class TransactionAdmin(admin.ModelAdmin):
 	list_display_links = ['id', 'booking', 'payment_method', 'trans_id']
 	list_filter = ['is_approved', 'payment_method']
 	search_fields = ['trans_id']
+
+
+
+@admin.register(PaymentMethod)
+class PaymentMethodAdmin(admin.ModelAdmin):
+	list_display = ['id', 'method_name', 'account_no', 'account_type', 'ifsc_code']
+	list_display_links = ['id', 'method_name', 'account_no']

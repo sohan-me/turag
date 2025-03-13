@@ -14,5 +14,7 @@ router.register(r'blog', views.BlogView, basename='blog'),
 urlpatterns = [
 	path('', include(router.urls)),
 	path('booking/', views.BookingView.as_view()),
-	path('contact/', views.ContactView.as_view()),	
+	path('contact/', views.ContactView.as_view()),
+	path('make-payment/', views.TransactionView.as_view()),
+	path('payment-method/', views.PaymentMethodView.as_view()),	
 ]
