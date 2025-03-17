@@ -115,3 +115,9 @@ class AboutSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = About
 		fields = '__all__'
+
+
+class VenueInfoSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = VenueInfo
+		fields = '__all__'

@@ -18,7 +18,7 @@ class Util:
   # Email for payment link after booking validation by admin
   @staticmethod
   def send_payment_email(data):
-    payment_link = f"https://turagwaterfrontresort.com/payment/"
+    payment_link = f"https://turagwaterfrontresort.com/make-payment"
 
     email = EmailMessage(
         subject='Your Room Booking Request at Turag Resort',

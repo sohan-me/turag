@@ -69,7 +69,7 @@ class SocialAdmin(admin.ModelAdmin):
 
 @admin.register(Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-	list_display = ['type', 'image', 'alt_text', 'description']
+	list_display = ['type', 'image', 'alt_text', 'venue', 'description']
 	list_display_links = ['type', 'image', 'description']
 
 
@@ -105,3 +105,10 @@ class TransactionAdmin(admin.ModelAdmin):
 class PaymentMethodAdmin(admin.ModelAdmin):
 	list_display = ['id', 'method_name', 'account_no', 'account_type', 'ifsc_code']
 	list_display_links = ['id', 'method_name', 'account_no']
+
+
+
+@admin.register(VenueInfo)
+class VenueInfoAdmin(admin.ModelAdmin):
+	list_display = ['id', 'title', 'venue', 'youtube_url']
+	list_display_links = ['id', 'title', 'venue']

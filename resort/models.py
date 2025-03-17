@@ -242,7 +242,7 @@ class Transaction(TimeStamp):
 	payment_method = models.CharField(max_length=100)
 	trans_id = models.CharField(max_length=200, unique=True)
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
-	document = models.ImageField(upload_to='transaction/', null=True, blank=True)
+	document = models.FileField(upload_to='transaction/', null=True, blank=True)
 	is_approved = models.BooleanField(default=False)
 
 	def __str__(self):
@@ -316,9 +316,15 @@ class Gallery(TimeStamp):
 		('Rooms', 'Rooms'),
 	]
 
+	Venue = (
+		('Dhaka','Dhaka'),
+		('Gazipur','Gazipur'),
+	)
+
 	type = models.CharField(choices=Type, max_length=20)
 	image = models.ImageField(upload_to='gallery/')
 	alt_text = models.CharField(max_length=100)
+	venue = models.CharField(max_length=50, choices=Venue)
 	description = models.TextField(null=True, blank=True)
 
 	class Meta:
@@ -375,3 +381,23 @@ class About(TimeStamp):
 
 	def __str__(self):
 		return self.address
+
+
+
+class VenueInfo(TimeStamp):
+	Venue = (
+		('Dhaka', 'Dhaka'),
+		('Gazipur', 'Gazipur'),
+	)
+
+	thumbnail = models.ImageField(upload_to='venue/thumbnail/', null=True, blank=True)
+	youtube_url = models.URLField(null=True, blank=True)
+	venue = models.CharField(max_length=100, choices=Venue)
+	title =  models.CharField(max_length=150)
+	content = HTMLField()
+
+	class Meta:
+		verbose_name_plural = 'Venue Info'
+
+	def __str__(self):
+		return self.title

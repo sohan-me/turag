@@ -205,6 +205,19 @@ class GalleryViewSet(viewsets.ViewSet):
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+	@action(detail=False, methods=['get'], url_path='by-venue/(?P<venue>[^/.]+)')
+	@extend_schema(
+		description='Get gallery items by Venue',
+		responses={200:GallerySerializer(many=True)}
+	)
+	def list_by_venue(self, request, venue=None):
+		queryset = self.get_queryset().filter(venue=venue)
+		if not queryset.exists():
+			return Response({'detail':'No gallery item found for this venue.'}, status=status.HTTP_404_NOT_FOUND)
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 class ContactView(APIView):
 	serializer_class = ContactSerializer
@@ -239,7 +252,6 @@ class BlogView(viewsets.ViewSet):
 
 	def get_queryset(self):
 		return Blog.objects.all()
-
 
 
 	@extend_schema(
@@ -290,7 +302,6 @@ class TransactionView(APIView):
 
 
 
-
 class PaymentMethodView(APIView):
 	serializer_class = PaymentMethodSerializer
 	permission_classes = [AllowAny]
@@ -321,11 +332,31 @@ class AboutView(APIView):
 
 	@extend_schema(
 		description='get address, email, phone and social links for turag.',
-		
 	)
 	def get(self, request):
 		queryset = self.get_queryset()
 		if not queryset.exists():
 			return Response({'detail':'No about informations are found !'}, status=status.HTTP_404_NOT_FOUND)
 		serializer = self.serializer_class(queryset, many=True)
-		return Response(serializer,data, status=status.HTTP_200_OK)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+class VenueInfoView(APIView):
+	serializer_class = VenueInfoSerializer
+	permission_classes = [AllowAny]
+
+	def get_queryset(self):
+		return VenueInfo.objects.all()
+
+	@extend_schema(
+		description='Get all venues information'
+	)
+	def get(self, request):
+		queryset = self.get_queryset()
+		if not queryset.exists():
+			return Response({'detail':'No Venue information are found.'}, status=status.HTTP_404_NOT_FOUND)
+
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
