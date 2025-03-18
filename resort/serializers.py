@@ -48,13 +48,20 @@ class ActivitySerializer(serializers.ModelSerializer):
 		read_only_fields = ['id', 'slug']
 
 
+class PlanSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Plan
+		fields = '__all__'
+
+
 
 class BookingSerializer(serializers.ModelSerializer):
 	room = serializers.PrimaryKeyRelatedField(queryset=Room.objects.all())
+	plan_type = serializers.PrimaryKeyRelatedField(queryset=Plan.objects.all())
 	
 	class Meta:
 		model = Booking
-		fields = ['id', 'room', 'full_name', 'email', 'phone', 'adults', 'children', 'check_in', 'check_out', 'address', 'remarks']
+		fields = ['id', 'room', 'plan_type', 'full_name', 'email', 'phone', 'adults', 'children', 'check_in', 'check_out', 'address', 'remarks']
 		read_only_fields = ['id']
 
 	def validate(self, data):

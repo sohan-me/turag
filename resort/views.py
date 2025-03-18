@@ -332,6 +332,7 @@ class AboutView(APIView):
 
 	@extend_schema(
 		description='get address, email, phone and social links for turag.',
+		responses={200:AboutSerializer}
 	)
 	def get(self, request):
 		queryset = self.get_queryset()
@@ -351,12 +352,34 @@ class VenueInfoView(APIView):
 		return VenueInfo.objects.all()
 
 	@extend_schema(
-		description='Get all venues information'
+		description='Get all venues information',
+		responses={200:VenueInfoSerializer}
 	)
 	def get(self, request):
 		queryset = self.get_queryset()
 		if not queryset.exists():
 			return Response({'detail':'No Venue information are found.'}, status=status.HTTP_404_NOT_FOUND)
+
+		serializer = self.serializer_class(queryset, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+class PlanView(APIView):
+	serializer_class = PlanSerializer
+	permission_classes = [AllowAny]
+
+	def get_queryset(self):
+		return Plan.objects.all()
+
+	@extend_schema(
+		description='Get list of all plans',
+		responses={200:PlanSerializer}
+	)
+	def get(self, request):
+		queryset = self.get_queryset()
+		if not queryset:
+			return Response({'detail': 'No plans are found.'}, status=status.HTTP_404_NOT_FOUND)
 
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)

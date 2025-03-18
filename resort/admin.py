@@ -3,6 +3,48 @@ from .models import *
 from nested_admin import NestedModelAdmin, NestedTabularInline, NestedStackedInline
 # Register your models here.
 
+class CustomAdminSite(admin.AdminSite):
+    site_header = "My E-Commerce Admin"
+    site_title = "E-Commerce Admin Portal"
+    index_title = "Welcome to the E-Commerce Admin"
+
+    def get_app_list(self, request):
+        app_list = super().get_app_list(request)
+
+        # Organize models into custom groups
+        grouped_models = {
+        	"Room and Features": ["Amenities", "Complementary", "Room", "RoomImageLine"],
+            "Activities ": ["Activity", "ActivityImageLine"],
+            "Plans and Booking": ["Plan", "Booking"],
+            "Payment and Transaction": ["PaymentMethod", "Transaction"],
+            "Core of Turag": ["Gallery", "VenueInfo", "Social", "About", "Blog", "Contact",], 
+        }
+
+        # Modify app_list to create custom sections
+        custom_list = []
+        for group, models in grouped_models.items():
+            grouped_app = {
+                "name": group,
+                "models": [],
+            }
+            for app in app_list:
+                for model in app["models"]:
+                    if model["object_name"] in models:
+                        grouped_app["models"].append(model)
+
+            if grouped_app["models"]:
+                custom_list.append(grouped_app)
+
+        return custom_list
+
+# Create an instance of the custom admin site
+custom_admin = CustomAdminSite(name="custom_admin")
+
+
+
+
+
+
 class RoomImageLineAdmin(NestedStackedInline):
 	model = RoomImageLine
 	extra = 4
@@ -46,10 +88,17 @@ class ActivityAdmin(NestedModelAdmin):
 	inlines = [ActivityImageLineAdmin]
 
 
+@admin.register(Plan)
+class PlanAdmin(admin.ModelAdmin):
+
+	list_display = ['id', 'type', 'cost']
+	list_display_links = ['id', 'type', 'cost']
+	list_filter = ['type']
+
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-	list_display = ['id', 'room', 'email', 'phone', 'full_name', 'check_in', 'check_out', 'status']
+	list_display = ['id', 'room', 'plan_type', 'email', 'phone', 'full_name', 'check_in', 'check_out', 'status']
 	list_display_links = ['id', 'email', 'phone']
 	list_filter = ['status']
 	search_fields = ['email', 'phone', 'full_name']

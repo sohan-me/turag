@@ -244,3 +244,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'turagwaterfrontresort5541@gmail.com'
 EMAIL_HOST_PASSWORD = 'jtoe ghqb jign lrnl'
 DEFAULT_FROM_EMAIL = ' turagwaterfrontresort5541@gmail.com'
+
+

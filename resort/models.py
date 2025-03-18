@@ -166,6 +166,21 @@ class ActivityImageLine(models.Model):
 		return self.activity.title
 
 
+# Model for Booking Plan
+class Plan(models.Model):
+	TYPE = (
+		('Day Long', 'Day Long'),
+		('Day Long All-Inclusive', 'Day Long All-Inclusive'),
+		('Night', 'Night'),
+		('Night All-Inclusive', 'Night All-Inclusive'),
+	)
+	type = models.CharField(max_length=25, choices=TYPE)
+	cost = models.IntegerField()
+
+	def __str__(self):
+		return f'{self.type} -- {self.cost}'
+
+
 
 # Model for storing Booking request
 class Booking(TimeStamp):
@@ -183,6 +198,7 @@ class Booking(TimeStamp):
 
 
 	room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True)
+	plan_type = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
 	full_name = models.CharField(max_length=150)
 	email = models.EmailField(null=True, blank=True)
 	phone = models.CharField(max_length=20, null=True, blank=True)
@@ -392,7 +408,7 @@ class VenueInfo(TimeStamp):
 
 	thumbnail = models.ImageField(upload_to='venue/thumbnail/', null=True, blank=True)
 	youtube_url = models.URLField(null=True, blank=True)
-	venue = models.CharField(max_length=100, choices=Venue)
+	venue = models.CharField(max_length=100, choices=Venue, unique=True)
 	title =  models.CharField(max_length=150)
 	content = HTMLField()
 
@@ -401,3 +417,10 @@ class VenueInfo(TimeStamp):
 
 	def __str__(self):
 		return self.title
+
+	def save(self, *args, **kwargs):
+		if VenueInfo.objects.filter(venue=self.venue).exclude(pk=self.pk).exists():
+			raise ValidationError(f'A VenueInfo already exists for this venue.')
+		super().save(*args, **kwargs)
+
+

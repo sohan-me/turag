@@ -19,4 +19,5 @@ urlpatterns = [
 	path('payment-methods/', views.PaymentMethodView.as_view()),
 	path('about_info/', views.AboutView.as_view()),
 	path('Venueinfo/', views.VenueInfoView.as_view()),
+	path('plans/', views.PlanView.as_view())
 ]
