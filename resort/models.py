@@ -175,10 +175,13 @@ class Plan(models.Model):
 		('Night All-Inclusive', 'Night All-Inclusive'),
 	)
 	type = models.CharField(max_length=25, choices=TYPE)
-	cost = models.IntegerField()
+	extra_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
 	def __str__(self):
-		return f'{self.type} -- {self.cost}'
+		if self.extra_cost:
+			return f'{self.type} -- {self.extra_cost}'
+		else:
+			return self.type
 
 
 
@@ -220,6 +223,12 @@ class Booking(TimeStamp):
 		unique_id = uuid.uuid4().hex[:12]
 		email_part = self.email.split('@')[0] if self.email else "guest.who"
 		self.booking_number = f"{email_part.lower()}-{unique_id}"
+
+	def total_days(self):
+		if self.check_in == self.check_out:
+			return 1
+		else:
+			return (self.check_out - self.check_in).days
 
 	# Assign the booking number if its empty
 	def save(self, *args, **kwargs):
@@ -265,14 +274,23 @@ class Transaction(TimeStamp):
 		return f'{self.trans_id} - {self.amount}' 
 
 	def save(self, *args, **kwargs):
+
+		# update booking status after approving transaction
 		if self.is_approved and self.booking:
-			book_cost = self.booking.room.cost
+			if self.booking.plan_type.extra_cost:
+				extra = self.booking.plan_type.extra_cost
+				book_cost = (self.booking.room.cost + extra) * self.booking.total_days()
+			else:
+				book_cost = self.booking.room.cost * self.booking.total_days
+
 			if self.amount >= book_cost:
 				self.booking.status = 'Fully Paid'
 			else:
 				self.booking.status = 'Partially Paid'
 
 			self.booking.save()
+
+			# send email to user that we received their payment
 			data = {
 				'full_name': self.booking.full_name,
 				'to_email': self.booking.email,
