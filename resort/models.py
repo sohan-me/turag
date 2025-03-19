@@ -386,7 +386,7 @@ class Contact(TimeStamp):
 	mark_as_read = models.BooleanField(default=False)
 
 	def __str__(self):
-		return self.full_name + ' ' + self.subject
+		return f"{self.full_name} {self.subject}" if self.subject else f"{self.full_name}"
 
 
 
