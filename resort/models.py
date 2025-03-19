@@ -11,6 +11,8 @@ from .utils import Util
 
 # Abstract model to increase code reusability
 class TimeStamp(models.Model):
+	meta_title = models.CharField(max_length=150, null=True, blank=True)
+	meta_description = models.TextField(null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -199,7 +201,6 @@ class Booking(TimeStamp):
 	]
 
 
-
 	room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True)
 	plan_type = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
 	full_name = models.CharField(max_length=150)
@@ -212,6 +213,8 @@ class Booking(TimeStamp):
 	address = models.CharField(max_length=255, null=True, blank=True)
 	remarks = models.CharField(max_length=255, null=True, blank=True)
 	booking_number = models.CharField(max_length=100, null=True, blank=True)
+	paid_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+	due_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 	status = models.CharField(max_length=100, choices=STATUS, default='Pending')
 
 
@@ -285,8 +288,12 @@ class Transaction(TimeStamp):
 
 			if self.amount >= book_cost:
 				self.booking.status = 'Fully Paid'
+				self.booking.paid_amount = book_cost
+				self.booking.due_amount = 0
 			else:
 				self.booking.status = 'Partially Paid'
+				self.booking.paid_amount = self.amount
+				self.booking.due_amount = book_cost - self.amount
 
 			self.booking.save()
 
@@ -428,7 +435,7 @@ class VenueInfo(TimeStamp):
 	youtube_url = models.URLField(null=True, blank=True)
 	venue = models.CharField(max_length=100, choices=Venue, unique=True)
 	title =  models.CharField(max_length=150)
-	content = HTMLField()
+	content = models.TextField()
 
 	class Meta:
 		verbose_name_plural = 'Venue Info'
