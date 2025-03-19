@@ -22,7 +22,6 @@ class TimeStamp(models.Model):
 
 
 
-
 # Amenities model
 class Amenities(TimeStamp):
 	icon = models.ImageField(upload_to='room/amenities/', null=True, blank=True)
@@ -396,7 +395,6 @@ class Blog(TimeStamp):
 	
 	title = models.CharField(max_length=150)
 	slug = models.CharField(max_length=160)
-	meta_description = models.TextField(null=True, blank=True)
 	description = HTMLField()
 	image = models.ImageField(upload_to='blogs/', null=True, blank=True)
 	alt_text = models.CharField(max_length=100, null=True, blank=True)
